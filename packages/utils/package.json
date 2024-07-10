@@ -4,7 +4,7 @@
   "description": "egg-cli-2024 utils",
   "author": "chenhui996 <chen562450669@qq.com>",
   "homepage": "",
-  "license": "ISC",
+  "license": "MIT",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib",
