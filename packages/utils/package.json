@@ -4,7 +4,7 @@
   "description": "egg-cli-2024 utils",
   "author": "chenhui996 <chen562450669@qq.com>",
   "homepage": "",
-  "license": "MIT",
+  "license": "ISC",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib",
@@ -19,5 +19,5 @@
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
-  "gitHead": "0da07ff4b972316aaee9c1685628320b3f268ef3"
+  "gitHead": "8f4d11bb12b1067f6e78811c0cc1b5fd9e194ed6"
 }

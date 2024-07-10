@@ -4,7 +4,7 @@
   "description": "> TODO: description",
   "author": "chenhui996 <chen562450669@qq.com>",
   "homepage": "egg-cli-2024 core",
-  "license": "MIT",
+  "license": "ISC",
   "main": "lib/core.js",
   "directories": {
     "lib": "lib",
@@ -22,5 +22,5 @@
   "dependencies": {
     "@egg-cli-2024/utils": "^1.0.8"
   },
-  "gitHead": "0da07ff4b972316aaee9c1685628320b3f268ef3"
+  "gitHead": "8f4d11bb12b1067f6e78811c0cc1b5fd9e194ed6"
 }
