@@ -4,5 +4,5 @@ module.exports = core;
 
 function core() {
     // TODO
-    // core
+    // core1
 }
