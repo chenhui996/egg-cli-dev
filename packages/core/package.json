@@ -1,6 +1,6 @@
 {
   "name": "@egg-cli-2024/core",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "> TODO: description",
   "author": "chenhui996 <chen562450669@qq.com>",
   "homepage": "egg-cli-2024 core",
@@ -20,7 +20,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@egg-cli-2024/utils": "^1.0.4"
+    "@egg-cli-2024/utils": "^1.0.5"
   },
   "gitHead": "f2cf7e9e86c631217e72595f7b40798826151861"
 }
