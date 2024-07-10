@@ -14,7 +14,7 @@
     "lib"
   ],
   "publishConfig": {
-    "registry": "http://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
@@ -22,5 +22,5 @@
   "dependencies": {
     "@egg-cli-2024/utils": "^1.0.7"
   },
-  "gitHead": "54175f7d6cb133fc94e35c4cd5eb3a79cc45356c"
+  "gitHead": "0da07ff4b972316aaee9c1685628320b3f268ef3"
 }
