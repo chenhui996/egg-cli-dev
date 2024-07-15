@@ -24,7 +24,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@egg-cli-2024/utils": "^1.0.11"
+    "@egg-cli-2024/utils": "file:../../utils/utils"
   },
   "gitHead": "7b4e9aa604661ec7482b45635080991a67765401"
 }
