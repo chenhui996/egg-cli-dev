@@ -13,6 +13,13 @@ const pkg = require('../package.json');
 const log = require('@egg-cli-2024/log');
 const constant = require('./const');
 
+// 检查 root 账户
+function checkRoot() {
+    const rootCheck = require('root-check');
+    rootCheck();
+    // console.log('rootCheck', process.getuid());
+}
+
 // 检查 Node 版本
 function checkNodeVersion() {
     // 第一步，获取当前 Node 版本
@@ -37,6 +44,7 @@ function core() {
     try {
         checkPkgVersion();
         checkNodeVersion();
+        checkRoot();
     } catch (error) {
         log.error(error.message);
     }
