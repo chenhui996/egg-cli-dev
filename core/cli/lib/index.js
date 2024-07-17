@@ -9,9 +9,19 @@ module.exports = core;
 
 const semver = require('semver');
 const colors = require('colors/safe');
+const userHome = require('user-home');
+const pathExists = require('path-exists').sync;
 const pkg = require('../package.json');
 const log = require('@egg-cli-2024/log');
 const constant = require('./const');
+
+// 检查用户主目录
+function checkUserHome() {
+    console.log('userHome', userHome);
+    if (!userHome || !pathExists(userHome)) {
+        throw new Error(colors.red('当前登录用户主目录不存在！'));
+    }
+}
 
 // 检查 root 账户
 function checkRoot() {
@@ -45,6 +55,7 @@ function core() {
         checkPkgVersion();
         checkNodeVersion();
         checkRoot();
+        checkUserHome();
     } catch (error) {
         log.error(error.message);
     }
