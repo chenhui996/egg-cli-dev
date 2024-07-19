@@ -7,6 +7,7 @@ module.exports = core;
 // .json -> JSON.parse
 // any -> .js
 
+const path = require('path');
 const semver = require('semver');
 const colors = require('colors/safe');
 const userHome = require('user-home');
@@ -16,6 +17,33 @@ const log = require('@egg-cli-2024/log');
 const constant = require('./const');
 
 let args;
+
+// 检查环境变量
+function checkEnv() {
+    const dotenv = require('dotenv');
+    const dotenvPath = path.resolve(userHome, '.env');
+    if (pathExists(dotenvPath)) {
+        dotenv.config({
+            path: dotenvPath,
+        });
+    };
+
+    createDefaultConfig();
+    log.verbose('环境变量', process.env.CLI_HOME_PATH);
+}
+
+// 创建默认配置
+function createDefaultConfig() {
+    const cliConfig = {
+        home: userHome,
+    };
+    if (process.env.CLI_HOME) {
+        cliConfig['cliHome'] = path.join(userHome, process.env.CLI_HOME);
+    } else {
+        cliConfig['cliHome'] = path.join(userHome, constant.DEFAULT_CLI_HOME);
+    }
+    process.env.CLI_HOME_PATH = cliConfig.cliHome;
+}
 
 // 检查参数
 function checkInputArgs() {
@@ -36,7 +64,6 @@ function checkArgs() {
 
 // 检查用户主目录
 function checkUserHome() {
-    // console.log('userHome', userHome);
     if (!userHome || !pathExists(userHome)) {
         throw new Error(colors.red('当前登录用户主目录不存在！'));
     }
@@ -46,7 +73,6 @@ function checkUserHome() {
 function checkRoot() {
     const rootCheck = require('root-check');
     rootCheck();
-    // console.log('rootCheck', process.getuid());
 }
 
 // 检查 Node 版本
@@ -76,7 +102,8 @@ function core() {
         checkRoot();
         checkUserHome();
         checkInputArgs();
-        log.verbose('debug', 'test debug log');
+        log.verbose('debug', '已开始debug模式, npmlog level: verbose');
+        checkEnv();
     } catch (error) {
         log.error(error.message);
     }
