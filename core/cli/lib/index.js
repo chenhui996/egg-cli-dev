@@ -18,6 +18,22 @@ const constant = require('./const');
 
 let args;
 
+async function checkGlobalUpdate() {
+    // 1. 获取当前版本号
+    const currentVersion = pkg.version;
+    const npmName = pkg.name;
+    // 2. 调用 npm API，获取所有版本号
+    // 3. 提取所有版本号，比对哪些版本号是大于当前版本号
+    // 4. 获取最新版本号，提示用户更新到最新版本
+    const { getNpmSemverVersion } = require("@egg-cli-2024/get-npm-info");
+    const lastVersion = await getNpmSemverVersion(currentVersion, npmName);
+
+    if (lastVersion && semver.gt(lastVersion, currentVersion) || args.debug) {
+        log.warn('更新提示', colors.yellow(`请手动更新 ${npmName}，当前版本：${currentVersion}，最新版本：${lastVersion}
+更新命令：npm install -g ${npmName}`));
+    }
+}
+
 // 检查环境变量
 function checkEnv() {
     const dotenv = require('dotenv');
@@ -95,7 +111,7 @@ function checkPkgVersion() {
 }
 
 // 主函数
-function core() {
+async function core() {
     try {
         checkPkgVersion();
         checkNodeVersion();
@@ -104,6 +120,7 @@ function core() {
         checkInputArgs();
         log.verbose('debug', '已开始debug模式, npmlog level: verbose');
         checkEnv();
+        await checkGlobalUpdate();
     } catch (error) {
         log.error(error.message);
     }
