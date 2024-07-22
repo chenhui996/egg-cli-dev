@@ -12,12 +12,56 @@ const semver = require('semver');
 const colors = require('colors/safe');
 const userHome = require('user-home');
 const pathExists = require('path-exists').sync;
+const commander = require('commander');
 const pkg = require('../package.json');
 const log = require('@egg-cli-2024/log');
 const constant = require('./const');
 
 let args;
 
+const program = new commander.Command();
+
+// 注册脚手架命令
+function registerCommand() {
+    // 注册命令
+    program
+        .name(Object.keys(pkg.bin)[0])
+        .usage('<command> [options]')
+        .version(pkg.version)
+        .option('-d, --debug', '是否开启调试模式', false) // 注册命令：debug，开启调试模式
+        .parse(process.argv);
+
+    // 实现 debug 命令：监听 debug，降低 log 级别
+    program.on('option:debug', function () {
+        if (program.opts().debug) {
+            process.env.LOG_LEVEL = 'verbose';
+        } else {
+            process.env.LOG_LEVEL = 'info';
+        }
+        log.level = process.env.LOG_LEVEL;
+        log.verbose('debug', '已开始debug模式, npmlog level: verbose');
+    });
+
+    // 对未知命令的监听
+    program.on('command:*', (obj) => {
+        // console.log('program', program);
+        const availableCommands = program.commands.map(cmd => cmd.name());
+        console.log(colors.red('未知命令：' + obj[0]));
+        if (availableCommands.length > 0) {
+            console.log(colors.red('可用命令：' + availableCommands.join(',')));
+        } 
+    })
+
+    // 当没有命令时，输出帮助信息
+    if (program.args && program.args.length < 1) {
+        program.outputHelp();
+        console.log();
+    }
+
+    program.parse(process.argv);
+}
+
+// 检查全局更新
 async function checkGlobalUpdate() {
     // 1. 获取当前版本号
     const currentVersion = pkg.version;
@@ -28,7 +72,7 @@ async function checkGlobalUpdate() {
     const { getNpmSemverVersion } = require("@egg-cli-2024/get-npm-info");
     const lastVersion = await getNpmSemverVersion(currentVersion, npmName);
 
-    if (lastVersion && semver.gt(lastVersion, currentVersion) || args.debug) {
+    if (lastVersion && semver.gt(lastVersion, currentVersion)) {
         log.warn('更新提示', colors.yellow(`请手动更新 ${npmName}，当前版本：${currentVersion}，最新版本：${lastVersion}
 更新命令：npm install -g ${npmName}`));
     }
@@ -65,18 +109,18 @@ function createDefaultConfig() {
 function checkInputArgs() {
     const minimist = require('minimist');
     args = minimist(process.argv.slice(2));
-    checkArgs(args);
+    // checkArgs(args);
 }
 
-// 检查参数，改变 log 级别
-function checkArgs() {
-    if (args.debug) {
-        process.env.LOG_LEVEL = 'verbose';
-    } else {
-        process.env.LOG_LEVEL = 'info';
-    }
-    log.level = process.env.LOG_LEVEL;
-}
+// // 检查参数，改变 log 级别
+// function checkArgs() {
+//     if (args.debug) {
+//         process.env.LOG_LEVEL = 'verbose';
+//     } else {
+//         process.env.LOG_LEVEL = 'info';
+//     }
+//     log.level = process.env.LOG_LEVEL;
+// }
 
 // 检查用户主目录
 function checkUserHome() {
@@ -110,6 +154,7 @@ function checkPkgVersion() {
     log.info('cli', pkg.version);
 }
 
+
 // 主函数
 async function core() {
     try {
@@ -118,9 +163,10 @@ async function core() {
         checkRoot();
         checkUserHome();
         checkInputArgs();
-        log.verbose('debug', '已开始debug模式, npmlog level: verbose');
+        // log.verbose('debug', '已开始debug模式, npmlog level: verbose');
         checkEnv();
         await checkGlobalUpdate();
+        registerCommand();
     } catch (error) {
         log.error(error.message);
     }

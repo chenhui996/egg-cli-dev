@@ -24,9 +24,10 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@egg-cli-2024/log": "file:../../utils/log",
     "@egg-cli-2024/get-npm-info": "file:../../utils/get-npm-info",
+    "@egg-cli-2024/log": "file:../../utils/log",
     "colors": "1.4.0",
+    "commander": "^6.2.1",
     "dotenv": "^8.2.0",
     "import-local": "^3.1.0",
     "minimist": "1.2.5",

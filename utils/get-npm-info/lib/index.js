@@ -6,10 +6,10 @@ const semver = require('semver');
 
 function getNpmInfo(npmName, rehistry) {
     if (!npmName) return null;
-    const registryUrl = rehistry || getDefaultRegistry(true);
+    const registryUrl = rehistry || getDefaultRegistry();
     const npmInfoUrl = urlJoin(registryUrl, npmName);
 
-    return axios.get('https://registry.npmjs.org/@egg-cli-2024/core').then(response => {
+    return axios.get(npmInfoUrl).then(response => {
         if (response.status === 200) {
             return response.data;
         }
@@ -21,7 +21,7 @@ function getNpmInfo(npmName, rehistry) {
 }
 
 function getDefaultRegistry(isOriginal = false) {
-    return isOriginal ? 'https://registry.npmjs.org' : 'https://registry.npm.taobao.org';
+    return isOriginal ? 'https://registry.npmjs.org' : 'https://registry.npmmirror.com/';
 }
 
 async function getNpmVersions(npmName, registry) {
