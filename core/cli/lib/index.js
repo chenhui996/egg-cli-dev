@@ -15,6 +15,7 @@ const pathExists = require('path-exists').sync;
 const commander = require('commander');
 const pkg = require('../package.json');
 const log = require('@egg-cli-2024/log');
+const init = require('@egg-cli-2024/init');
 const constant = require('./const');
 
 let args;
@@ -28,10 +29,15 @@ function registerCommand() {
         .name(Object.keys(pkg.bin)[0])
         .usage('<command> [options]')
         .version(pkg.version)
-        .option('-d, --debug', '是否开启调试模式', false) // 注册命令：debug，开启调试模式
-        .parse(process.argv);
+        .option('-d, --debug', '是否开启调试模式', false) // 添加属性：debug，开启调试模式
 
-    // 实现 debug 命令：监听 debug，降低 log 级别
+    // 实现命令：init
+    program
+        .command('init [projectName]')
+        .option('-f, --force', '是否强制初始化项目')
+        .action(init)
+
+    // 实现 debug 属性：监听 debug，降低 log 级别`
     program.on('option:debug', function () {
         if (program.opts().debug) {
             process.env.LOG_LEVEL = 'verbose';
@@ -49,16 +55,16 @@ function registerCommand() {
         console.log(colors.red('未知命令：' + obj[0]));
         if (availableCommands.length > 0) {
             console.log(colors.red('可用命令：' + availableCommands.join(',')));
-        } 
+        }
     })
 
+    program.parse(process.argv);
     // 当没有命令时，输出帮助信息
     if (program.args && program.args.length < 1) {
         program.outputHelp();
         console.log();
     }
 
-    program.parse(process.argv);
 }
 
 // 检查全局更新
