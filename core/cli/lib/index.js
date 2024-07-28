@@ -16,6 +16,7 @@ const commander = require('commander');
 const pkg = require('../package.json');
 const log = require('@egg-cli-2024/log');
 const init = require('@egg-cli-2024/init');
+const exec = require('@egg-cli-2024/exec');
 const constant = require('./const');
 
 const program = new commander.Command();
@@ -34,7 +35,7 @@ function registerCommand() {
     program
         .command('init [projectName]')
         .option('-f, --force', '是否强制初始化项目')
-        .action(init)
+        .action(exec)
 
     // 实现 debug 属性：监听 debug，降低 log 级别`
     program.on('option:debug', function () {
