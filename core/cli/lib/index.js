@@ -18,8 +18,6 @@ const log = require('@egg-cli-2024/log');
 const init = require('@egg-cli-2024/init');
 const constant = require('./const');
 
-let args;
-
 const program = new commander.Command();
 
 // 注册脚手架命令
@@ -30,6 +28,7 @@ function registerCommand() {
         .usage('<command> [options]')
         .version(pkg.version)
         .option('-d, --debug', '是否开启调试模式', false) // 添加属性：debug，开启调试模式
+        .option('-tp, --targetPath <targetPath>', '是否指定本地调试文件路径', ''); // 添加属性：targetPath，指定本地调试文件路径
 
     // 实现命令：init
     program
@@ -46,6 +45,11 @@ function registerCommand() {
         }
         log.level = process.env.LOG_LEVEL;
         log.verbose('debug', '已开始debug模式, npmlog level: verbose');
+    });
+
+    // 实现 targetPath 属性：监听 targetPath，设置环境变量
+    program.on('option:targetPath', function () {
+        process.env.CLI_TARGET_PATH = program.opts().targetPath;
     });
 
     // 对未知命令的监听
@@ -95,7 +99,6 @@ function checkEnv() {
     };
 
     createDefaultConfig();
-    log.verbose('环境变量', process.env.CLI_HOME_PATH);
 }
 
 // 创建默认配置
@@ -110,23 +113,6 @@ function createDefaultConfig() {
     }
     process.env.CLI_HOME_PATH = cliConfig.cliHome;
 }
-
-// 检查参数
-function checkInputArgs() {
-    const minimist = require('minimist');
-    args = minimist(process.argv.slice(2));
-    // checkArgs(args);
-}
-
-// // 检查参数，改变 log 级别
-// function checkArgs() {
-//     if (args.debug) {
-//         process.env.LOG_LEVEL = 'verbose';
-//     } else {
-//         process.env.LOG_LEVEL = 'info';
-//     }
-//     log.level = process.env.LOG_LEVEL;
-// }
 
 // 检查用户主目录
 function checkUserHome() {
@@ -160,18 +146,22 @@ function checkPkgVersion() {
     log.info('cli', pkg.version);
 }
 
+// 准备阶段
+async function prepare() {
+    checkPkgVersion();
+    checkNodeVersion();
+    checkRoot();
+    checkUserHome();
+    checkEnv();
+    await checkGlobalUpdate();
+
+}
+
 
 // 主函数
 async function core() {
     try {
-        checkPkgVersion();
-        checkNodeVersion();
-        checkRoot();
-        checkUserHome();
-        checkInputArgs();
-        // log.verbose('debug', '已开始debug模式, npmlog level: verbose');
-        checkEnv();
-        await checkGlobalUpdate();
+        await prepare();
         registerCommand();
     } catch (error) {
         log.error(error.message);
