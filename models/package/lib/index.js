@@ -1,6 +1,9 @@
 'use strict';
 
+const path = require('path');
+const pkgDir = require('pkg-dir');
 const { isObject } = require('@egg-cli-2024/utils');
+const formatPath = require('@egg-cli-2024/format-path');
 
 class Package {
     constructor(options) {
@@ -12,8 +15,6 @@ class Package {
         }
         // package 的路径
         this.targetPath = options.targetPath;
-        // package 的缓存路径
-        this.storePath = options.storePath;
         // package 的 name
         this.packageName = options.packageName;
         // package 的 version
@@ -38,6 +39,16 @@ class Package {
     // 获取入口文件的路径
     getRootFilePath() {
         console.log('Package getRootFilePath');
+        const dir = pkgDir.sync(this.targetPath);
+        if (dir) {
+            // 获取package.json所在的目录
+            const pkgFile = require(path.resolve(dir, 'package.json'));
+            if (pkgFile && pkgFile.main) {
+                // 路径的兼容（macOS/windows）
+                return formatPath(path.resolve(dir, pkgFile.main));
+            }
+        }
+        return null;
     }
 }
 

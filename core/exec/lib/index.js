@@ -8,27 +8,24 @@ const SETTINGS = {
 };
 
 function exec() {
-    // console.log(process.env.CLI_TARGET_PATH);
-    // console.log(process.env.CLI_HOME_PATH);
-    // console.log(process.env.CLI_HOME);
-    const targetPath = process.env.CLI_TARGET_PATH;
-    const homePath = process.env.CLI_HOME_PATH;
+    let targetPath = process.env.CLI_TARGET_PATH;
     log.verbose('targetPath', targetPath);
-    log.verbose('homePath', homePath);
+
+    if (!targetPath) {
+        targetPath = process.env.CLI_HOME_PATH;
+    }
 
     const cmdObj = arguments[arguments.length - 1];
     const cmdName = cmdObj.name();
-    console.log(cmdName);
     const packageName = SETTINGS[cmdName];
 
     const packageInstance = new Package({
         targetPath,
-        storePath: homePath,
         packageName,
         packageVersion: 'latest'
     });
 
-    console.log(packageInstance);
+    console.log(packageInstance.getRootFilePath());
 }
 
 module.exports = exec;
