@@ -4,6 +4,8 @@ const path = require('path');
 const pkgDir = require('pkg-dir');
 const { isObject } = require('@egg-cli-2024/utils');
 const formatPath = require('@egg-cli-2024/format-path');
+const npminstall = require('npminstall');
+const { getDefaultRegistry } = require('@egg-cli-2024/get-npm-info');
 
 class Package {
     constructor(options) {
@@ -15,6 +17,8 @@ class Package {
         }
         // package 的路径
         this.targetPath = options.targetPath;
+        // package 的缓存路径
+        this.storeDir = options.storeDir;
         // package 的 name
         this.packageName = options.packageName;
         // package 的 version
@@ -29,6 +33,14 @@ class Package {
     // 安装Package
     install() {
         console.log('Package install');
+        return npminstall({
+            root: this.targetPath,
+            storeDir: this.storeDir,
+            registry: getDefaultRegistry(),
+            pkgs: [
+                { name: this.packageName, version: this.packageVersion }
+            ]
+        });
     }
 
     // 更新Package

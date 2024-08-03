@@ -1,5 +1,5 @@
 {
-  "name": "get-npm-info",
+  "name": "@egg-cli-2024/get-npm-info",
   "version": "1.0.11",
   "description": "get npm info",
   "author": "hui.chen <hui.chen@sumscope.com>",
