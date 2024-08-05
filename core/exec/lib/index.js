@@ -20,6 +20,7 @@ async function exec() {
     const cmdObj = arguments[arguments.length - 1];
     const cmdName = cmdObj.name();
     const packageName = SETTINGS[cmdName];
+    const packageVersion = '1.0.1';
 
     if (!targetPath) {
         targetPath = path.resolve(homePath, CACHE_DIR);
@@ -31,15 +32,17 @@ async function exec() {
             targetPath,
             storeDir,
             packageName,
-            packageVersion: 'latest'
+            packageVersion
         });
 
         if (await pkg.exists()) {
             // 更新package
-            const rootFile = pkg.getRootFilePath();
-            if (rootFile) {
-                pkg.update();
-            }
+            // const rootFile = pkg.getRootFilePath();
+            // console.log('rootFile', rootFile);
+            // if (rootFile) {
+            //     pkg.update();
+            // }
+            await pkg.update();
         } else {
             // 安装package
             await pkg.install();
@@ -48,10 +51,11 @@ async function exec() {
         pkg = new Package({
             targetPath,
             packageName,
-            packageVersion: 'latest'
+            packageVersion
         })
     }
 
+    // console.log('pkg.exists()', await pkg.exists());
     const rootFile = pkg.getRootFilePath();
     if (rootFile) {
         require(rootFile).apply(null, arguments);
