@@ -58,7 +58,10 @@ async function exec() {
     // console.log('pkg.exists()', await pkg.exists());
     const rootFile = pkg.getRootFilePath();
     if (rootFile) {
-        require(rootFile).apply(null, arguments);
+        require(rootFile).apply(null, arguments); 
+        // 本行代码解释：require(rootFile)返回的是一个函数，然后调用这个函数
+        // rootFile 传入的是一个文件路径，这个文件路径是一个js文件，这个js文件是一个模坩，这个模坩导出了一个函数
+        // 所以这行代码的意思是：调用这个模坩导出的函数，并传入arguments
     }
 
     // console.log(pkg.getRootFilePath());

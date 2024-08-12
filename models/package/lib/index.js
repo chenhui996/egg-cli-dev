@@ -58,7 +58,7 @@ class Package {
             console.log('this.cacheFilePath', this.cacheFilePath);
             return pathExists(this.cacheFilePath);
         } else {
-            return pathExists(this.targetPath);
+            return pathExists(this.targetPath); // 什么时候会进入此分支？ 本地调试时，不需要缓存，直接使用本地的包
         }
     }
 
