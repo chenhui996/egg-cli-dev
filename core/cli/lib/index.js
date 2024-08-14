@@ -155,7 +155,6 @@ async function prepare() {
     checkUserHome();
     checkEnv();
     await checkGlobalUpdate();
-
 }
 
 

@@ -56,7 +56,7 @@ async function exec() {
     }
 
     // console.log('pkg.exists()', await pkg.exists());
-    const rootFile = pkg.getRootFilePath();
+    const rootFile = pkg.getRootFilePath(); // 已经是一个 js 文件的可执行路径了
     if (rootFile) {
         require(rootFile).apply(null, arguments); 
         // 本行代码解释：require(rootFile)返回的是一个函数，然后调用这个函数
