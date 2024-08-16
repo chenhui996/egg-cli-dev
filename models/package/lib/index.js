@@ -55,7 +55,7 @@ class Package {
         console.log('Package exists');
         if (this.storeDir) {
             await this.prepare();
-            console.log('this.cacheFilePath', this.cacheFilePath);
+            // console.log('this.cacheFilePath', this.cacheFilePath);
             return pathExists(this.cacheFilePath);
         } else {
             return pathExists(this.targetPath); // 什么时候会进入此分支？ 本地调试时，不需要缓存，直接使用本地的包
@@ -104,17 +104,26 @@ class Package {
 
     // 获取入口文件的路径
     getRootFilePath() {
-        console.log('Package getRootFilePath');
-        const dir = pkgDir.sync(this.targetPath);
-        if (dir) {
-            // 获取package.json所在的目录
-            const pkgFile = require(path.resolve(dir, 'package.json'));
-            if (pkgFile && pkgFile.main) {
-                // 路径的兼容（macOS/windows）
-                return formatPath(path.resolve(dir, pkgFile.main));
+        function _getRootFile(targetPath) {
+            // 1. 获取package.json所在的目录
+            const dir = pkgDir.sync(targetPath);
+            if (dir) {
+                // 2. 读取package.json
+                const pkgFile = require(path.resolve(dir, 'package.json'));
+                // 3. 寻找main/lib
+                if (pkgFile && pkgFile.main) {
+                    // 4. 路径的兼容（macOS/windows）
+                    return formatPath(path.resolve(dir, pkgFile.main));
+                }
             }
+            return null;
         }
-        return null;
+
+        if (this.storeDir) {
+            return _getRootFile(this.cacheFilePath);
+        } else {
+            return _getRootFile(this.targetPath);
+        }
     }
 }
 

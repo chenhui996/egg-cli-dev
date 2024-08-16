@@ -20,7 +20,7 @@ async function exec() {
     const cmdObj = arguments[arguments.length - 1];
     const cmdName = cmdObj.name();
     const packageName = SETTINGS[cmdName];
-    const packageVersion = '1.0.1';
+    const packageVersion = 'latest';
 
     if (!targetPath) {
         targetPath = path.resolve(homePath, CACHE_DIR);
@@ -37,11 +37,6 @@ async function exec() {
 
         if (await pkg.exists()) {
             // 更新package
-            // const rootFile = pkg.getRootFilePath();
-            // console.log('rootFile', rootFile);
-            // if (rootFile) {
-            //     pkg.update();
-            // }
             await pkg.update();
         } else {
             // 安装package
@@ -55,16 +50,14 @@ async function exec() {
         })
     }
 
-    // console.log('pkg.exists()', await pkg.exists());
     const rootFile = pkg.getRootFilePath(); // 已经是一个 js 文件的可执行路径了
+
     if (rootFile) {
-        require(rootFile).apply(null, arguments); 
+        require(rootFile).apply(null, arguments);
         // 本行代码解释：require(rootFile)返回的是一个函数，然后调用这个函数
         // rootFile 传入的是一个文件路径，这个文件路径是一个js文件，这个js文件是一个模坩，这个模坩导出了一个函数
         // 所以这行代码的意思是：调用这个模坩导出的函数，并传入arguments
     }
-
-    // console.log(pkg.getRootFilePath());
 }
 
 module.exports = exec;
