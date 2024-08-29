@@ -27,6 +27,7 @@
     "url": "https://github.com/chenhui996/egg-cli-dev/issues"
   },
   "dependencies": {
-    "@egg-cli-2024/command": "file:../../models/command"
+    "@egg-cli-2024/command": "file:../../models/command",
+    "@egg-cli-2024/log": "file:../../utils/log"
   }
 }

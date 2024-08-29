@@ -53,10 +53,15 @@ async function exec() {
     const rootFile = pkg.getRootFilePath(); // 已经是一个 js 文件的可执行路径了
 
     if (rootFile) {
-        require(rootFile).call(null, Array.from(arguments));
-        // 本行代码解释：require(rootFile)返回的是一个函数，然后调用这个函数
-        // rootFile 传入的是一个文件路径，这个文件路径是一个js文件，这个js文件是一个模坩，这个模坩导出了一个函数
-        // 所以这行代码的意思是：调用这个模坩导出的函数，并传入arguments
+        try {
+            require(rootFile).call(null, Array.from(arguments));
+            // 本行代码解释：require(rootFile)返回的是一个函数，然后调用这个函数
+            // rootFile 传入的是一个文件路径，这个文件路径是一个js文件，这个js文件是一个模坩，这个模坩导出了一个函数
+            // 所以这行代码的意思是：调用这个模坩导出的函数，并传入arguments
+        } catch (e) {
+            log.error(e.message)
+        }
+
     }
 }
 
