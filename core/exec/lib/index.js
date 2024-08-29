@@ -74,9 +74,10 @@ async function exec() {
             args[args.length - 1] = o;
             const code = `require('${rootFile}').call(null, ${JSON.stringify(args)})`;
             // -------------------------------------------------------------------
-            const child = cp.spawn('node', ['-e', code], {
-                cwd: process.cwd(),
-                stdio: 'inherit' // 作用：子进程的输入输出流和父进程的输入输出流是一样的
+
+            const child = spawn('node', ['-e', code], {
+                stdio: 'inherit',
+                cwd: process.cwd()
             });
 
             child.on('error', e => {
@@ -94,6 +95,14 @@ async function exec() {
         }
 
     }
+}
+
+function spawn(command, args, options) {
+    const win32 = process.platform === 'win32';
+    const cmd = win32 ? 'cmd' : command;
+    const commandArgs = win32 ? ['/c'].concat(command, args) : args;
+
+    return cp.spawn(cmd, commandArgs, options || {});
 }
 
 module.exports = exec;
