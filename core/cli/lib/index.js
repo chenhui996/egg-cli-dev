@@ -15,7 +15,6 @@ const pathExists = require('path-exists').sync;
 const commander = require('commander');
 const pkg = require('../package.json');
 const log = require('@egg-cli-2024/log');
-const init = require('@egg-cli-2024/init');
 const exec = require('@egg-cli-2024/exec');
 const constant = require('./const');
 
@@ -128,20 +127,6 @@ function checkRoot() {
     rootCheck();
 }
 
-// 检查 Node 版本
-function checkNodeVersion() {
-    // 第一步，获取当前 Node 版本
-    const currentVersion = process.version;
-    // 第二步，获取最低 Node 版本
-    const lowestVersion = constant.LOWEST_NODE_VERSION;
-    // 第三步，比对当前版本和最低版本
-    if (!semver.gte(currentVersion, lowestVersion)) {
-        throw new Error(colors.red(`egg-cli 需要安装 v${lowestVersion} 以上版本的 Node.js`));
-    } else {
-        log.info('cli', `Node.js 版本检查通过, 当前版本：${currentVersion}`);
-    }
-}
-
 // 检查版本号
 function checkPkgVersion() {
     log.info('cli', pkg.version);
@@ -150,7 +135,6 @@ function checkPkgVersion() {
 // 准备阶段
 async function prepare() {
     checkPkgVersion();
-    checkNodeVersion();
     checkRoot();
     checkUserHome();
     checkEnv();
