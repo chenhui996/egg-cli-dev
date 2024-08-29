@@ -1,5 +1,6 @@
 'use strict';
 
+const cp = require('child_process');
 const path = require('path');
 const Package = require('@egg-cli-2024/package');
 const log = require('@egg-cli-2024/log');
@@ -54,10 +55,29 @@ async function exec() {
 
     if (rootFile) {
         try {
-            require(rootFile).call(null, Array.from(arguments));
+
             // 本行代码解释：require(rootFile)返回的是一个函数，然后调用这个函数
             // rootFile 传入的是一个文件路径，这个文件路径是一个js文件，这个js文件是一个模坩，这个模坩导出了一个函数
             // 所以这行代码的意思是：调用这个模坩导出的函数，并传入arguments
+            // require(rootFile).call(null, Array.from(arguments));
+
+            // 在 node 子进程中调用
+            const code = 'console.log("hello world")';
+            const child = cp.spawn('node', ['-e', code], {
+                cwd: process.cwd(),
+                stdio: 'inherit' // 作用：子进程的输入输出流和父进程的输入输出流是一样的
+            });
+
+            child.on('error', e => {
+                log.error(e.message);
+                process.exit(1);
+            });
+
+            child.on('exit', e => {
+                log.verbose('命令执行成功：' + e);
+                process.exit(e);
+            });
+
         } catch (e) {
             log.error(e.message)
         }
