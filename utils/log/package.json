@@ -27,6 +27,7 @@
     "url": "https://github.com/chenhui996/egg-cli-dev/issues"
   },
   "dependencies": {
-    "npmlog": "^7.0.1"
+    "npmlog": "^7.0.1",
+    "@egg-cli-2024/command": "file:../../models/command"
   }
 }
