@@ -28,6 +28,8 @@
   },
   "dependencies": {
     "@egg-cli-2024/command": "file:../../models/command",
-    "@egg-cli-2024/log": "file:../../utils/log"
+    "@egg-cli-2024/log": "file:../../utils/log",
+    "fs-extra": "^11.2.0",
+    "inquirer": "7.3.3"
   }
 }
