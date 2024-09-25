@@ -3,6 +3,7 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
 const fse = require('fs-extra');
+const semver = require('semver');
 const Command = require('@egg-cli-2024/command')
 const log = require('@egg-cli-2024/log');
 
@@ -102,11 +103,24 @@ class InitCommand extends Command {
                     message: '请输入项目名称',
                     default: '',
                     validate: function (v) {
-                        return typeof v === 'string' && v.length > 0;
-                    },
+                        const done = this.async();
+
+                        setTimeout(function () {
+                            // 1.首字符为英文字符
+                            // 2.尾字符为英文或数字，不能为字符
+                            // 3.字符仅允许"-_"
+                            const pass = /^[a-zA-z]+([-][a-zA-Z][a-zA-Z0-9]*|[_][a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])*$/.test(v)
+
+                            if (!pass) {
+                                done('请输入合法的项目名称');
+                                return;
+                            }
+                            done(null, true);
+                        }, 0);
+                    }, // 控制输入的值
                     filter: function (v) {
                         return v;
-                    }
+                    } // 对输入的值做 format
                 },
                 {
                     type: 'input',
@@ -114,10 +128,20 @@ class InitCommand extends Command {
                     message: '请输入项目版本号',
                     default: '1.0.0',
                     validate: function (v) {
-                        return typeof v === 'string' && v.length > 0;
+                        const done = this.async();
+
+                        setTimeout(function () {
+                            const pass = !!semver.valid(v);
+
+                            if (!pass) {
+                                done('请输入合法的版本号');
+                                return;
+                            }
+                            done(null, true);
+                        }, 0);
                     },
                     filter: function (v) {
-                        return v;
+                        return semver.valid(v) ? semver.valid(v) : '';
                     }
                 },
                 {
