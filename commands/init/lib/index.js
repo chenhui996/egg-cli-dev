@@ -11,6 +11,7 @@ const TYPE_PROJECT = 'project';
 const TYPE_COMPONENT = 'component';
 
 class InitCommand extends Command {
+    // constructor 做初始化工作
     init() {
         this.projectName = this._argv[0] || '';
         this.force = !!this._cmd.force;
@@ -18,13 +19,16 @@ class InitCommand extends Command {
         log.verbose('force', this.force);
     }
 
+    // 核心执行逻辑
     async exec() {
         try {
             // 1. 准备阶段
-            const ret = await this.prepare();
+            const projectInfo = await this.prepare();
 
-            if (ret) {
+            if (projectInfo) {
                 // 2. 下载模板
+                log.verbose('projectInfo', projectInfo);
+                this.downloadTemplate();
                 // 3. 安装模板
             }
         } catch (error) {
@@ -35,6 +39,15 @@ class InitCommand extends Command {
         }
     }
 
+    downloadTemplate() {
+        // 1. 通过项目模板API获取项目模板信息
+        // 1.1 通过egg.js搭建一套后端系统
+        // 1.2 通过npm存储项目模板
+        // 1.3 将项目模板信息存储到mongodb数据库中
+        // 1.4 通过egg.js获取mongodb中的数据并通过API返回
+    }
+
+    // 准备阶段
     async prepare() {
         // 1. 判断当前目录是否为空
         const localPath = process.cwd(); // 当前命令行执行命令的路径
@@ -80,7 +93,7 @@ class InitCommand extends Command {
 
     // 获取项目基本信息
     async getProjectInfo() {
-        const projectInfo = {};
+        let projectInfo = {};
         // 1. 选择创建或者取消
         const { type } = await inquirer.prompt({
             type: 'list',
@@ -93,10 +106,9 @@ class InitCommand extends Command {
             ]
         }); // 选择创建项目或者组件
 
-        log.verbose('type', type);
         // 获取 项目 基本信息 
         if (type === TYPE_PROJECT) {
-            const o = await inquirer.prompt([
+            const project = await inquirer.prompt([
                 {
                     type: 'input',
                     name: 'projectName',
@@ -155,7 +167,11 @@ class InitCommand extends Command {
                 }
             ]);
 
-            log.verbose('o', o);
+            projectInfo = {
+                type,
+                ...project
+            }
+
         } else if (type === TYPE_COMPONENT) {
             // 获取 组件 基本信息
         }
@@ -163,6 +179,7 @@ class InitCommand extends Command {
         return projectInfo;
     }
 
+    // 判断当前目录是否为空
     isDirEmpty(localPath) {
         let fileList = fs.readdirSync(localPath);
         fileList = fileList.filter(file => !file.startsWith('.') && ['node_modules'].indexOf(file) < 0);
